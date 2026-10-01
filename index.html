@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f6f6ef">
+  <title>EduGenie | Your learning desk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f6f6ef;
+      --white: #fff;
+      --ink: #202b26;
+      --muted: #737c75;
+      --line: #e7e9df;
+      --green: #214c3c;
+      --green-soft: #e7f0e9;
+      --lime: #e0ec9c;
+      --coral: #e7795b;
+      --coral-soft: #fff0e8;
+      --blue-soft: #e9f1f2;
+      --shadow: 0 18px 50px rgba(33, 54, 42, .07);
+      font-family: "Plus Jakarta Sans", "Trebuchet MS", sans-serif;
+      font-synthesis: none;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: var(--paper); color: var(--ink); }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .shell { min-height: 100vh; display: grid; grid-template-columns: 238px minmax(0, 1fr); }
+    .sidebar { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; padding: 28px 18px 20px; border-right: 1px solid var(--line); background: rgba(255,255,255,.58); }
+    .brand { display: flex; align-items: center; gap: 11px; margin: 0 0 42px 8px; color: var(--ink); text-decoration: none; font-size: 17px; font-weight: 800; }
+    .brand-mark { width: 31px; height: 31px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px; padding: 7px; border-radius: 10px; background: var(--green); transform: rotate(-4deg); }
+    .brand-mark i { display: block; border-radius: 2px; background: var(--lime); }
+    .brand-mark i:last-child { background: #fff; }
+    .nav-label, .eyebrow { color: var(--muted); font-size: 10px; font-weight: 800; letter-spacing: 0; text-transform: uppercase; }
+    .nav-label { margin: 0 0 10px 11px; }
+    .nav { display: grid; gap: 5px; }
+    .nav button { width: 100%; display: flex; align-items: center; gap: 11px; min-height: 43px; padding: 0 11px; border: 0; border-radius: 8px; background: transparent; color: #626d66; text-align: left; font-size: 12px; font-weight: 700; transition: background .18s ease, color .18s ease, transform .18s ease; }
+    .nav button:hover { background: #eef1e9; color: var(--ink); transform: translateX(2px); }
+    .nav button[aria-current="page"] { background: var(--green-soft); color: var(--green); }
+    .nav-glyph { width: 21px; height: 21px; display: grid; place-items: center; border: 1px solid currentColor; border-radius: 6px; font-size: 11px; }
+    .sidebar-bottom { margin-top: auto; }
+    .side-note { padding: 14px; border: 1px solid #e8ebdf; border-radius: 10px; background: #fbfcf5; }
+    .side-note strong { display: block; margin: 7px 0 4px; font-size: 12px; }
+    .side-note p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .note-mark { width: 28px; height: 28px; display: grid; place-items: center; border-radius: 8px; background: var(--lime); color: var(--green); font-size: 15px; }
+    .sidebar-foot { margin: 15px 5px 0; color: #8c938d; font-size: 10px; }
+    .main { min-width: 0; }
+    .topbar { height: 76px; display: flex; justify-content: space-between; align-items: center; padding: 0 clamp(22px, 4.4vw, 64px); border-bottom: 1px solid var(--line); }
+    .breadcrumb { display: flex; align-items: center; gap: 9px; color: var(--muted); font-size: 11px; }
+    .breadcrumb strong { color: var(--ink); font-weight: 700; }
+    .top-meta { display: flex; align-items: center; gap: 15px; }
+    .mode-pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 99px; background: #fff; color: #58655d; font-size: 10px; font-weight: 700; }
+    .mode-dot { width: 7px; height: 7px; border-radius: 50%; background: #56a66d; box-shadow: 0 0 0 3px #e6f3e8; }
+    .avatar { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: #f6d9c9; color: #714a38; font-family: "DM Serif Display", Georgia, serif; font-size: 15px; }
+    .workspace { max-width: 1350px; display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: clamp(25px, 4vw, 58px); padding: 48px clamp(22px, 4.4vw, 64px) 60px; margin: 0 auto; }
+    .content { min-width: 0; max-width: 740px; }
+    .eyebrow { color: #71866f; }
+    h1 { max-width: 650px; margin: 13px 0 10px; font-family: "DM Serif Display", Georgia, serif; font-size: clamp(34px, 4vw, 49px); font-weight: 400; line-height: 1.13; letter-spacing: 0; }
+    .lede { max-width: 500px; margin: 0; color: var(--muted); font-size: 13px; line-height: 1.8; }
+    .tool-switch { display: none; }
+    .tool-panel { margin-top: 32px; padding: 23px; border: 1px solid #e9ebe2; border-radius: 12px; background: var(--white); box-shadow: var(--shadow); animation: enter .42s ease both; }
+    @keyframes enter { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: translateY(0); } }
+    .panel-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .panel-head h2 { margin: 0; font-size: 14px; font-weight: 800; }
+    .panel-hint { color: #939a93; font-size: 10px; }
+    .field-label { display: block; margin: 0 0 8px; color: #58645c; font-size: 11px; font-weight: 700; }
+    textarea, input[type="text"], select { width: 100%; border: 1px solid #e5e8df; border-radius: 8px; outline: none; background: #fcfcf9; color: var(--ink); transition: border .18s, box-shadow .18s; }
+    textarea:focus, input[type="text"]:focus, select:focus { border-color: #8ca995; box-shadow: 0 0 0 3px rgba(63, 112, 81, .1); }
+    textarea { min-height: 105px; padding: 13px 14px; resize: vertical; font-size: 12px; line-height: 1.7; }
+    textarea::placeholder, input::placeholder { color: #a5aaa4; }
+    input[type="text"], select { min-height: 42px; padding: 0 12px; font-size: 12px; }
+    .field-grid { display: grid; grid-template-columns: 1fr 150px; gap: 13px; }
+    .form-actions { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 14px; }
+    .microcopy { color: #969d96; font-size: 10px; }
+    .primary-btn { min-height: 40px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 0 16px; border: 0; border-radius: 7px; background: var(--green); color: #fff; font-size: 11px; font-weight: 800; transition: background .18s, transform .18s; }
+    .primary-btn:hover { background: #173b2d; transform: translateY(-1px); }
+    .primary-btn:disabled { cursor: wait; opacity: .65; }
+    .button-arrow { color: var(--lime); font-size: 15px; }
+    .examples { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 13px; }
+    .examples-label { margin-right: 2px; color: #929a92; font-size: 10px; }
+    .example-chip { padding: 7px 10px; border: 1px solid #e8eae4; border-radius: 99px; background: #fff; color: #69736c; font-size: 10px; transition: border .18s, color .18s; }
+    .example-chip:hover { border-color: #93ad98; color: var(--green); }
+    .result { margin-top: 18px; padding: 18px 19px; border: 1px solid #dce9dc; border-radius: 10px; background: #f6faf3; animation: enter .3s ease both; }
+    .result[hidden] { display: none; }
+    .result-title { margin: 0 0 10px; color: var(--green); font-size: 11px; font-weight: 800; }
+    .result-body { color: #39483f; font-size: 12px; line-height: 1.85; overflow-wrap: anywhere; }
+    .result-body h3 { margin: 15px 0 5px; font-family: "DM Serif Display", Georgia, serif; font-size: 19px; font-weight: 400; }
+    .result-body h3:first-child { margin-top: 0; }
+    .result-body p { margin: 0 0 8px; }
+    .result-body ol, .result-body ul { padding-left: 20px; }
+    .quick-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 23px; }
+    .quick-card { min-height: 85px; padding: 13px; border: 1px solid var(--line); border-radius: 9px; background: rgba(255,255,255,.62); text-align: left; transition: transform .18s, background .18s; }
+    .quick-card:hover { transform: translateY(-2px); background: #fff; }
+    .quick-card span { display: block; margin-bottom: 8px; font-size: 10px; font-weight: 800; }
+    .quick-card small { color: var(--muted); font-size: 10px; }
+    .quick-card:nth-child(1) span { color: #508063; }
+    .quick-card:nth-child(2) span { color: #cf795b; }
+    .quick-card:nth-child(3) span { color: #527e85; }
+    .rail { padding-top: 5px; }
+    .rail-heading { display: flex; justify-content: space-between; align-items: center; margin: 0 0 13px; }
+    .rail-heading h2 { margin: 0; font-size: 12px; font-weight: 800; }
+    .tiny-spark { color: var(--coral); font-size: 16px; }
+    .focus-card { padding: 17px; border: 1px solid #e8eadf; border-radius: 10px; background: #fff; }
+    .focus-card p { margin: 0; color: var(--muted); font-size: 10px; line-height: 1.7; }
+    .focus-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .focus-top strong { font-size: 11px; }
+    .focus-badge { padding: 5px 7px; border-radius: 5px; background: var(--coral-soft); color: #af644c; font-size: 9px; font-weight: 800; }
+    .focus-line { height: 1px; margin: 14px 0; background: var(--line); }
+    .focus-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .focus-stats b { display: block; margin-bottom: 3px; color: var(--green); font-family: "DM Serif Display", Georgia, serif; font-size: 21px; font-weight: 400; }
+    .focus-stats span { color: var(--muted); font-size: 9px; }
+    .photo-card { position: relative; height: 132px; overflow: hidden; margin-top: 15px; border-radius: 9px; background: #dfe9de; }
+    .photo-card img { width: 100%; height: 100%; display: block; object-fit: cover; }
+    .photo-caption { position: absolute; inset: auto 0 0; padding: 24px 12px 11px; background: linear-gradient(transparent, rgba(19, 43, 33, .72)); color: #fff; font-family: "DM Serif Display", Georgia, serif; font-size: 17px; }
+    .recommend-card { margin-top: 15px; padding: 16px; border-radius: 10px; background: var(--green); color: #fff; }
+    .recommend-card h3 { margin: 0 0 5px; font-family: "DM Serif Display", Georgia, serif; font-size: 19px; font-weight: 400; }
+    .recommend-card p { margin: 0 0 13px; color: #c7d8cc; font-size: 10px; line-height: 1.7; }
+    .recommend-card .field-label { color: #d9e7dc; }
+    .recommend-card input, .recommend-card select { min-height: 37px; border-color: rgba(255,255,255,.18); background: rgba(255,255,255,.1); color: #fff; font-size: 10px; }
+    .recommend-card select option { color: var(--ink); }
+    .recommend-card input::placeholder { color: #bdcfc2; }
+    .recommend-card .primary-btn { width: 100%; min-height: 37px; margin-top: 10px; background: var(--lime); color: var(--green); }
+    .recommend-card .primary-btn:hover { background: #edf5c4; }
+    .recommend-card .button-arrow { color: var(--green); }
+    .recommend-result { max-height: 260px; overflow: auto; margin-top: 12px; padding: 10px; border-radius: 7px; background: rgba(255,255,255,.1); color: #f4f8f1; font-size: 10px; line-height: 1.7; }
+    .recommend-result[hidden] { display: none; }
+    .quiz-question { margin: 0 0 14px; font-family: "DM Serif Display", Georgia, serif; font-size: 21px; line-height: 1.35; }
+    .quiz-options { display: grid; gap: 8px; }
+    .quiz-option { width: 100%; display: flex; align-items: center; gap: 10px; padding: 11px; border: 1px solid #e5e9df; border-radius: 7px; background: #fff; color: var(--ink); text-align: left; font-size: 11px; }
+    .quiz-option:hover:not(:disabled) { border-color: #94ae9a; background: #f8fbf5; }
+    .quiz-option.correct { border-color: #77a786; background: #edf6ee; }
+    .quiz-option.incorrect { border-color: #df957d; background: #fff2ed; }
+    .option-key { width: 22px; height: 22px; flex: 0 0 auto; display: grid; place-items: center; border-radius: 5px; background: #f1f3ed; color: #68746b; font-size: 10px; font-weight: 800; }
+    .quiz-progress { margin-bottom: 12px; color: #839087; font-size: 10px; font-weight: 700; }
+    .quiz-feedback { margin-top: 12px; color: #526057; font-size: 11px; line-height: 1.7; }
+    .quiz-next { margin-top: 13px; }
+    .error-text { margin-top: 11px; color: #a44835; font-size: 11px; }
+    @media (max-width: 1050px) { .workspace { grid-template-columns: minmax(0, 1fr) 230px; gap: 24px; } }
+    @media (max-width: 820px) {
+      .shell { grid-template-columns: 1fr; }
+      .sidebar { position: static; height: auto; padding: 14px 18px 0; border-right: 0; background: transparent; }
+      .brand { margin: 0 0 13px 3px; }
+      .nav-label, .sidebar-bottom { display: none; }
+      .nav { display: flex; overflow-x: auto; gap: 5px; padding-bottom: 10px; scrollbar-width: none; }
+      .nav::-webkit-scrollbar { display: none; }
+      .nav button { width: auto; min-width: max-content; min-height: 37px; padding: 0 10px; }
+      .nav-glyph { display: none; }
+      .topbar { height: 54px; padding: 0 20px; }
+      .workspace { grid-template-columns: minmax(0, 1fr); padding: 34px 20px 45px; }
+      .content { max-width: none; }
+      .rail { display: grid; grid-template-columns: 1fr 1fr; align-items: start; gap: 12px; padding-top: 0; }
+      .rail-heading { grid-column: 1 / -1; margin-bottom: 0; }
+      .photo-card { height: 100%; min-height: 160px; margin: 0; }
+      .recommend-card { margin: 0; }
+    }
+    @media (max-width: 520px) {
+      .top-meta { gap: 10px; }
+      .breadcrumb { font-size: 10px; }
+      .mode-pill { padding: 6px 8px; font-size: 9px; }
+      .workspace { padding-top: 28px; }
+      h1 { font-size: 37px; }
+      .tool-panel { margin-top: 24px; padding: 17px; }
+      .panel-head { align-items: flex-start; }
+      .field-grid { grid-template-columns: 1fr; }
+      .form-actions { align-items: flex-start; flex-direction: column; }
+      .primary-btn { min-height: 42px; }
+      .quick-row { gap: 7px; }
+      .quick-card { min-height: 82px; padding: 10px; }
+      .quick-card span { line-height: 1.4; }
+      .rail { grid-template-columns: 1fr; }
+      .photo-card { height: 145px; }
+    }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#" aria-label="EduGenie home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i><i></i></span>edugenie</a>
+      <p class="nav-label">Your study desk</p>
+      <nav class="nav" aria-label="Learning tools">
+        <button type="button" data-tool="ask" aria-current="page"><span class="nav-glyph" aria-hidden="true">?</span>Ask a question</button>
+        <button type="button" data-tool="quiz"><span class="nav-glyph" aria-hidden="true">Q</span>Generate a quiz</button>
+        <button type="button" data-tool="path"><span class="nav-glyph" aria-hidden="true">↗</span>Learning path</button>
+        <button type="button" data-tool="summary"><span class="nav-glyph" aria-hidden="true">≡</span>Summarize text</button>
+        <button type="button" data-tool="recommend"><span class="nav-glyph" aria-hidden="true">✳</span>Study picks</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="side-note"><span class="note-mark" aria-hidden="true">✳</span><strong>Small steps add up.</strong><p>A little curiosity each day can take you somewhere new.</p></div>
+        <p class="sidebar-foot">Made for the joy of figuring it out.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="breadcrumb"><span>My desk</span><span aria-hidden="true">/</span><strong id="crumb">Ask a question</strong></div>
+        <div class="top-meta"><span class="mode-pill"><i class="mode-dot" aria-hidden="true"></i><span id="mode-label">Local mode</span></span><span class="avatar" aria-label="Learner profile">S</span></div>
+      </header>
+
+      <div class="workspace">
+        <section class="content" aria-live="polite">
+          <p class="eyebrow">Your learning desk</p>
+          <h1 id="page-title">What are we curious about?</h1>
+          <p class="lede" id="page-lede">Bring a question, a tricky idea, or just the start of a thought. We’ll work through it together.</p>
+          <div class="tool-panel" id="tool-panel"></div>
+          <div class="quick-row" aria-label="Explore a study tool">
+            <button class="quick-card" type="button" data-open-tool="quiz"><span>Check what you know</span><small>Turn a topic into a quick quiz</small></button>
+            <button class="quick-card" type="button" data-open-tool="path"><span>Find your next step</span><small>Map a topic from start to stretch</small></button>
+            <button class="quick-card" type="button" data-open-tool="summary"><span>Make it make sense</span><small>Find the key ideas in a passage</small></button>
+          </div>
+        </section>
+
+        <aside class="rail" aria-label="Study overview">
+          <div class="rail-heading"><h2>A little momentum</h2><span class="tiny-spark" aria-hidden="true">✳</span></div>
+          <div class="focus-card">
+            <div class="focus-top"><strong>Your learning rhythm</strong><span class="focus-badge">Keep going</span></div>
+            <p>Curiosity is a good place to begin. Pick one idea and give it your attention.</p>
+            <div class="focus-line"></div>
+            <div class="focus-stats"><div><b>01</b><span>idea at a time</span></div><div><b>∞</b><span>ways to learn</span></div></div>
+          </div>
+          <div class="photo-card"><img src="https://images.unsplash.com/photo-1501504905252-473c47e087f8?auto=format&fit=crop&w=720&q=80" alt="A bright, calm place to read and study" loading="lazy"><div class="photo-caption">Room to wonder.</div></div>
+          <form class="recommend-card" id="recommend-form">
+            <h3>Study picks, for you</h3>
+            <p>Tell us what you're learning and where you'd like to go.</p>
+            <label class="field-label" for="rec-topic">Your topic</label>
+            <input id="rec-topic" name="topic" type="text" value="SQL" required maxlength="300">
+            <label class="field-label" for="rec-level" style="margin-top:10px">Where you're starting</label>
+            <select id="rec-level" name="level"><option value="new">Just starting</option><option value="some">Know a little</option><option value="confident">Ready to stretch</option></select>
+            <label class="field-label" for="rec-goal" style="margin-top:10px">Your goal</label>
+            <input id="rec-goal" name="goal" type="text" value="Query a small database" required maxlength="300">
+            <button class="primary-btn" type="submit">Get my study picks <span class="button-arrow" aria-hidden="true">→</span></button>
+            <div class="recommend-result" id="recommend-result" hidden></div>
+          </form>
+        </aside>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const tools = {
+      ask: { label: "Ask a question", title: "What are we curious about?", lede: "Bring a question, a tricky idea, or just the start of a thought. We’ll work through it together.", heading: "Ask away", hint: "A clear question is a great start.", button: "Get an explanation", fields: `<label class="field-label" for="ask-input">Your question</label><textarea id="ask-input" name="question" placeholder="For example, which is the largest ocean?" required minlength="3" maxlength="1200"></textarea><div class="examples"><span class="examples-label">Try asking</span><button class="example-chip" type="button" data-prompt="Which is the largest ocean?">Largest ocean?</button><button class="example-chip" type="button" data-prompt="Can you explain the Pythagorean theorem simply?">Pythagorean theorem</button></div>` },
+      quiz: { label: "Generate a quiz", title: "A little check-in with yourself.", lede: "Choose a topic and see what’s already sticking. Every question comes with a useful explanation.", heading: "Make a quick quiz", hint: "No grades here, just progress.", button: "Build my quiz", fields: `<div class="field-grid"><div><label class="field-label" for="quiz-topic">Topic</label><input id="quiz-topic" name="topic" type="text" placeholder="The Pythagorean theorem" required minlength="2" maxlength="300"></div><div><label class="field-label" for="quiz-count">Number of questions</label><select id="quiz-count" name="count"><option value="3">3 questions</option><option value="5" selected>5 questions</option><option value="8">8 questions</option></select></div></div>` },
+      path: { label: "Learning path", title: "Make a path through the unknown.", lede: "Start with the basics, build real skills, and know what to try next.", heading: "Plan your learning", hint: "Built around your time and topic.", button: "Build my learning path", fields: `<div class="field-grid"><div><label class="field-label" for="path-topic">What would you like to learn?</label><input id="path-topic" name="topic" type="text" placeholder="SQL, from beginner to advanced" required minlength="2" maxlength="300"></div><div><label class="field-label" for="path-weeks">Time to explore</label><select id="path-weeks" name="weeks"><option value="2">2 weeks</option><option value="4" selected>4 weeks</option><option value="6">6 weeks</option><option value="8">8 weeks</option></select></div></div>` },
+      summary: { label: "Summarize text", title: "Find the idea inside the paragraph.", lede: "Paste in a passage and get a plain-language overview with the details worth remembering.", heading: "Bring a passage", hint: "From class notes, a reading, or your own draft.", button: "Find the key ideas", fields: `<label class="field-label" for="summary-text">Text to summarize</label><textarea id="summary-text" name="text" placeholder="Paste an educational passage here…" required minlength="30" maxlength="12000" style="min-height:160px"></textarea>` },
+      recommend: { label: "Study picks", title: "A next step that fits you.", lede: "Tell us what you’re learning, what you already know, and what you’re working toward.", heading: "Shape your next steps", hint: "A few details make a better plan.", button: "Get my recommendations", fields: `<div class="field-grid"><div><label class="field-label" for="rec-tool-topic">What are you learning?</label><input id="rec-tool-topic" name="topic" type="text" placeholder="SQL" required minlength="2" maxlength="300"></div><div><label class="field-label" for="rec-tool-level">Your current level</label><select id="rec-tool-level" name="level"><option value="new">Just starting</option><option value="some">Know a little</option><option value="confident">Ready to stretch</option></select></div></div><label class="field-label" for="rec-tool-goal" style="margin-top:14px">What would you like to do?</label><input id="rec-tool-goal" name="goal" type="text" placeholder="Query a small database" required minlength="3" maxlength="300">` }
+    };
+    const panel = document.getElementById("tool-panel");
+    let activeTool = "ask";
+    let quizState = null;
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
+    }
+    function markdown(value) {
+      return String(value).split("\n").map(line => {
+        const safe = escapeHtml(line).replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        if (safe.startsWith("### ")) return `<h3>${safe.slice(4)}</h3>`;
+        if (/^\d+\. /.test(safe)) return `<p>${safe.replace(/^(\d+\.) /, "<strong>$1</strong> ")}</p>`;
+        if (safe.startsWith("- ")) return `<p>• ${safe.slice(2)}</p>`;
+        return safe ? `<p>${safe}</p>` : "";
+      }).join("");
+    }
+    function showResult(text, title = "A thought to take with you") {
+      const result = document.getElementById("result");
+      result.hidden = false;
+      result.querySelector(".result-title").textContent = title;
+      result.querySelector(".result-body").innerHTML = markdown(text);
+    }
+    function renderTool(name) {
+      activeTool = name;
+      quizState = null;
+      const tool = tools[name];
+      document.getElementById("crumb").textContent = tool.label;
+      document.getElementById("page-title").textContent = tool.title;
+      document.getElementById("page-lede").textContent = tool.lede;
+      document.querySelectorAll("[data-tool]").forEach(button => {
+        if (button.dataset.tool === name) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+      panel.innerHTML = `<div class="panel-head"><h2>${tool.heading}</h2><span class="panel-hint">${tool.hint}</span></div><form id="tool-form">${tool.fields}<div class="form-actions"><span class="microcopy">A little curiosity goes a long way.</span><button class="primary-btn" type="submit">${tool.button}<span class="button-arrow" aria-hidden="true">→</span></button></div><div class="error-text" role="alert" hidden></div></form><section class="result" id="result" aria-live="polite" hidden><p class="result-title"></p><div class="result-body"></div></section>`;
+      panel.querySelector("form").addEventListener("submit", submitTool);
+      panel.querySelectorAll("[data-prompt]").forEach(button => button.addEventListener("click", () => {
+        const input = panel.querySelector("textarea");
+        input.value = button.dataset.prompt;
+        input.focus();
+      }));
+    }
+    function formData(form) { return Object.fromEntries(new FormData(form).entries()); }
+    async function post(url, data) {
+      const response = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(data) });
+      const payload = await response.json();
+      if (!response.ok) throw new Error(payload.detail?.[0]?.msg || "Something went wrong. Please try again.");
+      return payload;
+    }
+    async function submitTool(event) {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button[type=submit]");
+      const error = form.querySelector(".error-text");
+      error.hidden = true;
+      button.disabled = true;
+      button.dataset.label = button.textContent;
+      button.textContent = "Thinking…";
+      try {
+        const values = formData(form);
+        if (activeTool === "ask") {
+          const result = await post("/api/ask", values);
+          showResult(result.answer, "Here’s the idea");
+        } else if (activeTool === "quiz") {
+          const result = await post("/api/quiz", { ...values, count: Number(values.count) });
+          quizState = { questions: result.questions, index: 0, score: 0, answered: false };
+          renderQuestion();
+        } else if (activeTool === "path") {
+          const result = await post("/api/learning-path", { ...values, weeks: Number(values.weeks) });
+          showResult(result.path, "Your learning path");
+        } else if (activeTool === "summary") {
+          const result = await post("/api/summarize", values);
+          showResult(result.summary, "The key ideas");
+        } else {
+          const result = await post("/api/recommend", values);
+          showResult(result.recommendations, "Your next study picks");
+        }
+      } catch (reason) {
+        error.textContent = reason.message || "Couldn't connect. Is the EduGenie server running?";
+        error.hidden = false;
+      } finally {
+        button.disabled = false;
+        button.innerHTML = `${tools[activeTool].button}<span class="button-arrow" aria-hidden="true">→</span>`;
+      }
+    }
+    function renderQuestion() {
+      const result = document.getElementById("result");
+      const state = quizState;
+      const question = state.questions[state.index];
+      result.hidden = false;
+      result.querySelector(".result-title").textContent = `Question ${state.index + 1} of ${state.questions.length}`;
+      const body = result.querySelector(".result-body");
+      body.replaceChildren();
+      const progress = document.createElement("p");
+      progress.className = "quiz-progress";
+      progress.textContent = `So far: ${state.score} correct`;
+      const prompt = document.createElement("h3");
+      prompt.className = "quiz-question";
+      prompt.textContent = question.question;
+      const options = document.createElement("div");
+      options.className = "quiz-options";
+      question.options.forEach((option, index) => {
+        const choice = document.createElement("button");
+        choice.type = "button";
+        choice.className = "quiz-option";
+        choice.innerHTML = `<span class="option-key">${String.fromCharCode(65 + index)}</span>`;
+        const label = document.createElement("span");
+        label.textContent = option;
+        choice.append(label);
+        choice.addEventListener("click", () => answerQuestion(index));
+        options.append(choice);
+      });
+      body.append(progress, prompt, options);
+    }
+    function answerQuestion(selected) {
+      const state = quizState;
+      if (state.answered) return;
+      state.answered = true;
+      const question = state.questions[state.index];
+      if (selected === question.answer) state.score += 1;
+      panel.querySelectorAll(".quiz-option").forEach((button, index) => {
+        button.disabled = true;
+        if (index === question.answer) button.classList.add("correct");
+        else if (index === selected) button.classList.add("incorrect");
+      });
+      const body = document.querySelector("#result .result-body");
+      const feedback = document.createElement("p");
+      feedback.className = "quiz-feedback";
+      feedback.textContent = `${selected === question.answer ? "That's right." : "Not quite."} ${question.explanation}`;
+      body.append(feedback);
+      const next = document.createElement("button");
+      next.type = "button";
+      next.className = "primary-btn quiz-next";
+      next.textContent = state.index + 1 < state.questions.length ? "Next question →" : "See my result →";
+      next.addEventListener("click", () => {
+        state.index += 1;
+        state.answered = false;
+        if (state.index < state.questions.length) renderQuestion();
+        else showResult(`You got ${state.score} out of ${state.questions.length} right. ${state.score === state.questions.length ? "Excellent work." : "A good next step is to revisit the ideas that felt less familiar and try again."}`, "Quiz complete");
+      });
+      body.append(next);
+    }
+
+    document.querySelectorAll("[data-tool]").forEach(button => button.addEventListener("click", () => renderTool(button.dataset.tool)));
+    document.querySelectorAll("[data-open-tool]").forEach(button => button.addEventListener("click", () => {
+      renderTool(button.dataset.openTool);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }));
+    document.getElementById("recommend-form").addEventListener("submit", async event => {
+      event.preventDefault();
+      const form = event.currentTarget;
+      const button = form.querySelector("button");
+      const result = document.getElementById("recommend-result");
+      button.disabled = true;
+      button.firstChild.textContent = "Thinking… ";
+      try {
+        const recommendation = await post("/api/recommend", formData(form));
+        result.innerHTML = markdown(recommendation.recommendations);
+        result.hidden = false;
+      } catch (reason) {
+        result.textContent = reason.message || "Couldn't connect to EduGenie.";
+        result.hidden = false;
+      } finally {
+        button.disabled = false;
+        button.firstChild.textContent = "Get my study picks ";
+      }
+    });
+    fetch("/api/health").then(response => response.json()).then(data => {
+      document.getElementById("mode-label").textContent = data.mode === "cloud" ? "AI connected" : "Local mode";
+    }).catch(() => { document.getElementById("mode-label").textContent = "Offline"; });
+    renderTool("ask");
+  </script>
+</body>
+</html>
